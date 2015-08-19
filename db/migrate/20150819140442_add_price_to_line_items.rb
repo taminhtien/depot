@@ -4,7 +4,7 @@ class AddPriceToLineItems < ActiveRecord::Migration
     add_column :line_items, :price, :decimal
 
     # Updates line item's price based on its product price
-    LineItem.find(:all).each do |line_item|
+    LineItem.all.each do |line_item|
     	line_item.update_attribute :price, line_item.product.price
     end
   end
