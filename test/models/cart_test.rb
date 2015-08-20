@@ -14,10 +14,10 @@ class CartTest < ActiveSupport::TestCase
       cart.add_product(product.id, product.price).save!
     end
     
-    # Gets the quantity of ruby product  
-    ruby_item = cart.line_items.find_by_product_id ruby.id
+    # Gets ruby product  
+    ruby_item = cart.line_items.find_by(product_id: ruby.id)
     # The quantity of ruby product must be 1
-    assert_equal 1, ruby_item.quantity, "Cart line item is incorrect"
+    assert_equal 1, ruby_item.quantity, "Cart line item quantity is incorrect"
 	end
 
 	test "cart line items should contain duplicate products" do
@@ -28,9 +28,21 @@ class CartTest < ActiveSupport::TestCase
       cart.add_product(ruby.id, ruby.price).save!
     end
   	
-    # Gets the quantity of ruby product  
-    ruby_item = cart.line_items.find_by_product_id ruby.id
+    # Gets ruby product  
+    ruby_item = cart.line_items.find_by(product_id: ruby.id)
     # The quantity of ruby product must be 3
-    assert_equal 3, ruby_item.quantity, "Cart line item is incorrect"
+    assert_equal 3, ruby_item.quantity, "Cart line item quantity is incorrect"
 	end
+
+  test "cart line items price should equal most recent price" do
+    ruby = products(:ruby)
+    cart = carts(:cart2)
+    cart.add_product(ruby.id, ruby.price).save!   
+    ruby.price = 100 
+    cart.add_product(ruby.id, ruby.price).save!
+    # Gets ruby product  
+    ruby_item = cart.line_items.find_by(product_id: ruby.id)
+    # The price of ruby product must be updated
+    assert_equal 100, ruby_item.price, "Cart line item price is incorrect"
+  end
 end
